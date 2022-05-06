@@ -1,15 +1,22 @@
 import React from "react";
 import GameSquare from "./components/GameSquare"
+import { TilemapGenerator } from "./tilemap/TilemapGenerator";
 
 
-export type Tile = "Grass" | "Rock" | "Unknown"
+export type Tile = "Grass" | "Dirt" | "Rock" | "Water" | "Sand" | "Unknown"
 
 function getTileColor(tile: Tile) {
     switch (tile) {
         case "Grass":
             return "#45fc03";
+        case "Dirt":
+            return "#ba8900";
         case "Rock":
             return "#9eb396";
+        case "Sand":
+            return "#faea39";
+        case "Water":
+            return "#69ffe1";
         case "Unknown":
             return "#ffffff";
     }
@@ -17,14 +24,17 @@ function getTileColor(tile: Tile) {
 
 export default class Game {
     
-    private array : Tile[][] = [[]]
+    private array: Tile[][] = [[]]
 
-    public readonly x: number
-    public readonly y: number
+    public readonly sizeX: number
+    public readonly sizeY: number
+    private readonly tilemapGenerator: TilemapGenerator
 
-    constructor(x: number, y: number) {
-        this.x = x
-        this.y = y
+    constructor(x: number, y: number, tilemapGenerator: TilemapGenerator) {
+        this.sizeX = x
+        this.sizeY = y
+        this.tilemapGenerator = tilemapGenerator
+        this.tilemapGenerator.game = this
 
         // grid initialization
         for (let i = 0; i < y; i++) {
@@ -37,41 +47,83 @@ export default class Game {
         }
     }
 
-    getTileAt(x: number, y: number) : Tile {
+    /**
+     * Generate the map.
+     */
+    generateTilemap() {
+        this.tilemapGenerator.generate()
+    }
+
+    getTileAt(x: number, y: number) : Tile | undefined {
+        try {
+            if (this.array.length < y) return undefined
+            if (this.array[x].length < x) return undefined
+        } catch {
+            return undefined
+        }
         return this.array[x][y]
     }
 
     setTileAt(x: number, y: number, tile: Tile) {
+        if (x > this.sizeX) return
+        if (y > this.sizeY) return
         this.array[x][y] = tile
     }
 
-    toJSXElements() : JSX.Element[][] {
-        let jsxArray : JSX.Element[][] = [[]]
+    toJSXElements() : JSX.Element[] {
+        let jsxArray : JSX.Element[] = []
         // grid initialization
-        for (let i = 0; i < this.y; i++) {
+        for (let i = 0; i < this.sizeY; i++) {
             // row initialization
-            for (let i2 = 0; i2 < this.x; i2++) {
+            let row : JSX.Element[] = []
+            for (let i2 = 0; i2 < this.sizeX; i2++) {
                 let tile = this.array[i][i2]
-                jsxArray[i][i2] = <GameSquare color={getTileColor(tile)}></GameSquare>
+                row.push(<GameSquare key={`${i};${i2}`} color={getTileColor(tile)} />)
             }
+            jsxArray.push(
+                <div className="flex">{row}</div>
+            )
         }
         return jsxArray
     }
 
-    getNeighbors(x: number, y: number) : Tile[] {
+    getNeighbors(x: number, y: number, direct: boolean = false) : Tile[] {
         let tileArray : Tile[] = []
+        const pushIfNotNull = (item?: Tile) => {
+            if (!item) return
+            tileArray.push(item)
+        }
         
-        tileArray.push(this.getTileAt(x-1,y-1))
-        tileArray.push(this.getTileAt(x,y-1))
-        tileArray.push(this.getTileAt(x+1,y-1))
+        if (!direct) pushIfNotNull(this.getTileAt(x-1,y-1))
+        pushIfNotNull(this.getTileAt(x,y-1))
+        if (!direct) pushIfNotNull(this.getTileAt(x+1,y-1))
 
-        tileArray.push(this.getTileAt(x-1,y))
+        pushIfNotNull(this.getTileAt(x-1,y))
 
-        tileArray.push(this.getTileAt(x+1,y))
+        pushIfNotNull(this.getTileAt(x+1,y))
 
-        tileArray.push(this.getTileAt(x-1,y+1))
-        tileArray.push(this.getTileAt(x,y+1))
-        tileArray.push(this.getTileAt(x+1,y+1))
+        if (!direct) pushIfNotNull(this.getTileAt(x-1,y+1))
+        pushIfNotNull(this.getTileAt(x,y+1))
+        if (!direct) pushIfNotNull(this.getTileAt(x+1,y+1))
         return tileArray
     }
+
+    getNeighborQuantities(x: number, y: number, direct: boolean = false) : QuantifiableTileset {
+        let neighbors = this.getNeighbors(x, y, direct)
+        let items : Partial<QuantifiableTileset> = {} 
+        for (let neighbor of neighbors) {
+            let previousValue = items[neighbor]
+            let newValue = (previousValue ?? 0) + 1
+            items[neighbor] = newValue
+        }
+        for (let item of Object.entries(items)) {
+            let typedItem = item as unknown as Tile
+            if (!items[typedItem]) items[typedItem] = 0
+        }
+        return items as QuantifiableTileset
+    }
+}
+
+type QuantifiableTileset = {
+    [T in Tile]: number
 }
