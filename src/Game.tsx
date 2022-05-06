@@ -1,8 +1,9 @@
-import React from "react"
+import React from "react";
 import GameSquare from "./components/GameSquare"
 
 
 export type Tile = "Grass" | "Rock" | "Unknown"
+
 function getTileColor(tile: Tile) {
     switch (tile) {
         case "Grass":
