@@ -6,11 +6,11 @@ export type Tile = "Grass" | "Rock" | "Unknown"
 function getTileColor(tile: Tile) {
     switch (tile) {
         case "Grass":
-            return "#45fc03"
+            return "#45fc03";
         case "Rock":
-            return "#9eb396"
+            return "#9eb396";
         case "Unknown":
-            return "#ffffff"
+            return "#ffffff";
     }
 }
 
