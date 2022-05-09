@@ -19,7 +19,7 @@ export function GameComponent() {
     })
 
     let generator = new OverworldGenerator()
-    let game = new Game(gameSettings.size, gameSettings.size, generator)
+    let game = new Game(gameSettings.size, generator)
     game.generateTilemap()
     let [dummyValue, updateState] = useState(0)
 
@@ -38,20 +38,15 @@ export function GameComponent() {
     }
 
     return <div>
-        <div className="flex justify-evenly">
-            <GameSetting<number> label="Size" defaultValue={50} 
-                setter={(value) => {updateValue("size", value)}} 
-                getter={() => {return gameSettings.size}}/>
-        </div>
-
+        <GameSetting<number> label="Size" defaultValue={50} 
+            setter={(value) => {updateValue("size", value)}} 
+            getter={() => {return gameSettings.size}}/>
         <button onClick={() => {
             console.log("Attempting regenerate")
             game.generateTilemap()
             update()
         }}>Regenerate</button>
-        <div className="flex items-center justify-center" style={gameGridStyle}>
-            <GameGrid game={game} updateGame={update}/>
-        </div>
+        <GameGrid game={game} updateGame={update} gameSettings={gameSettings}/>
     </div>
 }
 
