@@ -6,10 +6,6 @@ import { TilemapGenerator } from "./TilemapGenerator";
 export class OverworldGenerator extends TilemapGenerator {
     
 
-    constructor() {
-        super()
-    }
-
     override generate() {
         this.layer_1()
         this.layer_2()
@@ -24,28 +20,33 @@ export class OverworldGenerator extends TilemapGenerator {
     }
     // water 
     private layer_2() {
+        // place initial random water
         this.forEachTile((x, y) => {
-            let multi = (this.game.getNeighborQuantities(x, y).Water ?? 0) + 1
+            let multi = this.game.getNeighborQuantities(x, y).Water + 1
             if (Math.random() < 0.1*multi)
                 return "Water"
             
             return undefined
         })
+        // merge random water bits to more congealed masses
         this.forEachTile((x,y) => {
             let a = this.game.getNeighborQuantities(x, y)
             if (Math.random() < 0.5 && a.Water > 1)
                 return "Water"
         })
+        // erase any land that is surrounded by water on all sides
         this.forEachTile((x,y) => {
             let a = this.game.getNeighborQuantities(x, y)
             if (a.Water >= 5)
                 return "Water"
-            if ((a.Water ?? 0) <= 1)
+            if (a.Water <= 1)
                 return "Grass"
         })
     }
 
+    // sand
     private layer_3() {
+        // inset outline all grass with sand
         this.forEachTile((x, y, tile) => {
             let a = this.game.getNeighborQuantities(x, y, true)
             if (a.Water >= 1 && tile == "Grass")
@@ -53,9 +54,10 @@ export class OverworldGenerator extends TilemapGenerator {
             
             return undefined
         })
+        // delete sand that isn't near atleast 1 grass
         this.forEachTile((x, y, tile) => {
             let a = this.game.getNeighborQuantities(x, y)
-            if ((a.Grass ?? 0) == 0 && tile == "Sand")
+            if (a.Grass == 0 && tile == "Sand")
                 return "Water"
             
             return undefined

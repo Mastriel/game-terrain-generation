@@ -1,8 +1,11 @@
 import React from "react";
+import { CSSProperties } from "react";
+import { gameSize } from "./components/GameComponent";
 import GameSquare from "./components/GameSquare"
 import { TilemapGenerator } from "./tilemap/TilemapGenerator";
 
 
+let tileTypes = ["Grass", "Dirt", "Rock", "Water", "Sand", "Unknown"] as const
 export type Tile = "Grass" | "Dirt" | "Rock" | "Water" | "Sand" | "Unknown"
 
 export function getTileColor(tile: Tile) {
@@ -14,7 +17,7 @@ export function getTileColor(tile: Tile) {
         case "Rock":
             return "#9eb396";
         case "Sand":
-            return "#faea39";
+            return "#fff47a";
         case "Water":
             return "#69ffe1";
         case "Unknown":
@@ -81,10 +84,13 @@ export default class Game {
             let row : JSX.Element[] = []
             for (let i2 = 0; i2 < this.sizeX; i2++) {
                 let tile = this.array[i][i2]
-                row.push(<GameSquare key={`${i};${i2}`} color={getTileColor(tile)} />)
+                row.push(<GameSquare key={`${i};${i2}`} color={getTileColor(tile)} size={this.sizeX}/>)
+            }
+            let style : CSSProperties = {
+                width: gameSize
             }
             jsxArray.push(
-                <div className="flex">{row}</div>
+                <div className="flex" style={style}>{row}</div>
             )
         }
         return jsxArray
@@ -127,9 +133,9 @@ export default class Game {
             let newValue = (previousValue ?? 0) + 1
             items[neighbor!] = newValue
         }
-        for (let item of Object.entries(items)) {
+        for (let item of tileTypes) {
             let typedItem = item as unknown as Tile
-            if (!items[typedItem]) items[typedItem] = 0
+            items[typedItem] = items[typedItem] ?? 0
         }
         return items as QuantifiableTileset
     }

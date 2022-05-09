@@ -1,18 +1,23 @@
 import { CSSProperties } from "react"
+import { gameSize } from "./GameComponent"
 
 
 
 type SquareProps = {
     color: string,
-    key: string
+    key: string,
+    size: number
 }
 
 /** @deprecated */
 export default function GameSquare(props: SquareProps) : JSX.Element {
     let style : CSSProperties = {
-        backgroundColor: props.color
+        backgroundColor: props.color,
+        width: `${gameSize/props.size}px`,
+        height: `${gameSize/props.size}px`
+
     }
     return (
-        <div className="w-2 h-2 border border-slate-500" style={style} />
+        <div style={style} />
     )
 }

@@ -1,19 +1,27 @@
-import { useState } from "react"
+import { CSSProperties, useState } from "react"
 import Game from "../Game"
 import { OverworldGenerator } from "../tilemap/OverworldGenerator"
+import { Timer } from "../utils/Timer"
 import GameGrid from "./GameGrid"
 import { GameSetting, GameSettingProps, GameSettingType } from "./GameSetting"
 
 export type GameSettings = {
-    size: number,
+    size: number
 }
 
 export type GameSetting = keyof GameSettings
 
+export const gameSize = 600
+
 export function GameComponent() {
     let [gameSettings, setGameSettings] = useState<GameSettings>({
+<<<<<<< HEAD
         size: 25
+=======
+        size: 50
+>>>>>>> c83c8dc2045155d920d419bf94d470aa36d770a4
     })
+
     let generator = new OverworldGenerator()
     let game = new Game(gameSettings.size, generator)
     game.generateTilemap()
@@ -26,6 +34,11 @@ export function GameComponent() {
     }
     let update = () => {
         updateState(dummyValue + 1)
+    }
+
+    let gameGridStyle : CSSProperties = {
+        width: gameSize,
+        height: gameSize,
     }
 
     return <div>
