@@ -5,9 +5,11 @@ import { OverworldGenerator } from "./OverworldGenerator"
 
 export abstract class TilemapGenerator {
 
-    public static readonly GENERATORS : TilemapGenerator[] = [
-        new OverworldGenerator()
-    ]
+    public static get GENERATORS() : TilemapGenerator[] { 
+        return [
+            new OverworldGenerator()
+        ]
+    }
     
     private _game? : Game
     
