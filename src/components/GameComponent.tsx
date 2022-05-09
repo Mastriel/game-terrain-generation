@@ -5,19 +5,17 @@ import GameGrid from "./GameGrid"
 import { GameSetting, GameSettingProps, GameSettingType } from "./GameSetting"
 
 export type GameSettings = {
-    sizeX: number,
-    sizeY: number,
+    size: number,
 }
 
 export type GameSetting = keyof GameSettings
 
 export function GameComponent() {
     let [gameSettings, setGameSettings] = useState<GameSettings>({
-        sizeX: 200,
-        sizeY: 200
+        size: 100
     })
     let generator = new OverworldGenerator()
-    let game = new Game(gameSettings.sizeX, gameSettings.sizeY, generator)
+    let game = new Game(gameSettings.size, generator)
     game.generateTilemap()
     let [dummyValue, updateState] = useState(0)
 
@@ -31,15 +29,15 @@ export function GameComponent() {
     }
 
     return <div>
-        <GameSetting<number> label="Size X" defaultValue={50} 
-            setter={(value) => {updateValue("sizeX", value)}} 
-            getter={() => {return gameSettings.sizeX}}/>
+        <GameSetting<number> label="Size" defaultValue={50} 
+            setter={(value) => {updateValue("size", value)}} 
+            getter={() => {return gameSettings.size}}/>
         <button onClick={() => {
             console.log("Attempting regenerate")
             game.generateTilemap()
             update()
         }}>Regenerate</button>
-        <GameGrid game={game} updateGame={update}/>
+        <GameGrid game={game} updateGame={update} gameSettings={gameSettings}/>
     </div>
 }
 

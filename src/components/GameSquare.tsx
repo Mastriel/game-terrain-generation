@@ -7,7 +7,7 @@ type SquareProps = {
     key: string
 }
 
-
+/** @deprecated */
 export default function GameSquare(props: SquareProps) : JSX.Element {
     let style : CSSProperties = {
         backgroundColor: props.color

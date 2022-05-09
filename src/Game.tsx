@@ -5,7 +5,7 @@ import { TilemapGenerator } from "./tilemap/TilemapGenerator";
 
 export type Tile = "Grass" | "Dirt" | "Rock" | "Water" | "Sand" | "Unknown"
 
-function getTileColor(tile: Tile) {
+export function getTileColor(tile: Tile) {
     switch (tile) {
         case "Grass":
             return "#45fc03";
@@ -30,17 +30,17 @@ export default class Game {
     public readonly sizeY: number
     private readonly tilemapGenerator: TilemapGenerator
 
-    constructor(x: number, y: number, tilemapGenerator: TilemapGenerator) {
-        this.sizeX = x
-        this.sizeY = y
+    constructor(size: number, tilemapGenerator: TilemapGenerator) {
+        this.sizeX = size
+        this.sizeY = size
         this.tilemapGenerator = tilemapGenerator
         this.tilemapGenerator.game = this
 
         // grid initialization
-        for (let i = 0; i < y; i++) {
+        for (let i = 0; i < this.sizeY; i++) {
             let row : Tile[] = []
             // row initialization
-            for (let i2 = 0; i2 < x; i2++) {
+            for (let i2 = 0; i2 < this.sizeX; i2++) {
                 row[i2] = "Unknown" 
             }
             this.array[i] = row
@@ -50,11 +50,11 @@ export default class Game {
     /**
      * Generate the map.
      */
-    generateTilemap() {
+    public generateTilemap() {
         this.tilemapGenerator.generate()
     }
 
-    getTileAt(x: number, y: number) : Tile | undefined {
+    public getTileAt(x: number, y: number) : Tile | undefined {
         try {
             if (this.array.length < y) return undefined
             if (this.array[x].length < x) return undefined
@@ -64,13 +64,16 @@ export default class Game {
         return this.array[x][y]
     }
 
-    setTileAt(x: number, y: number, tile: Tile) {
+    public setTileAt(x: number, y: number, tile: Tile) {
         if (x > this.sizeX) return
         if (y > this.sizeY) return
         this.array[x][y] = tile
     }
 
-    toJSXElements() : JSX.Element[] {
+    /**
+     * @deprecated
+     */
+    public toJSXElements() : JSX.Element[] {
         let jsxArray : JSX.Element[] = []
         // grid initialization
         for (let i = 0; i < this.sizeY; i++) {
@@ -87,7 +90,15 @@ export default class Game {
         return jsxArray
     }
 
-    getNeighbors(x: number, y: number, direct: boolean = false) : Tile[] {
+    public forEachTile(block: (x: number, y: number, tile: Tile) => void) {
+        for (let i = 0; i < this.sizeY; i++) {
+            for (let i2 = 0; i2 < this.sizeX; i2++) {
+                block(i, i2, this.getTileAt(i, i2)!)
+            }
+        }
+    }
+
+    public getNeighbors(x: number, y: number, direct: boolean = false) : Tile[] {
         let tileArray : Tile[] = []
         const pushIfNotNull = (item?: Tile) => {
             if (!item) return
@@ -108,7 +119,7 @@ export default class Game {
         return tileArray
     }
 
-    getNeighborQuantities(x: number, y: number, direct: boolean = false) : QuantifiableTileset {
+    public getNeighborQuantities(x: number, y: number, direct: boolean = false) : QuantifiableTileset {
         let neighbors = this.getNeighbors(x, y, direct)
         let items : Partial<QuantifiableTileset> = {} 
         for (let neighbor of neighbors) {
