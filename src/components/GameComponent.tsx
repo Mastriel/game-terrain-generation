@@ -15,11 +15,7 @@ export const gameSize = 600
 
 export function GameComponent() {
     let [gameSettings, setGameSettings] = useState<GameSettings>({
-<<<<<<< HEAD
         size: 25
-=======
-        size: 50
->>>>>>> c83c8dc2045155d920d419bf94d470aa36d770a4
     })
 
     let generator = new OverworldGenerator()
