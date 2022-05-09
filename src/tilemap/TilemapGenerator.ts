@@ -1,8 +1,13 @@
 import Game, { Tile } from "../Game"
+import { OverworldGenerator } from "./OverworldGenerator"
 
 
 
 export abstract class TilemapGenerator {
+
+    public static readonly GENERATORS : TilemapGenerator[] = [
+        new OverworldGenerator()
+    ]
     
     private _game? : Game
     
@@ -38,13 +43,13 @@ export abstract class TilemapGenerator {
         for (let i = 0; i < this.sizeY; i++) {
             for (let i2 = 0; i2 < this.sizeX; i2++) {
                 let result = block(i, i2, this.game.getTileAt(i, i2)!)
-                if (result != undefined)
+                if (result !== undefined)
                     this.game.setTileAt(i, i2, result)
             }
         }
     }
 
-    randomInt(min: number, max: number) { // min and max included 
+    protected randomInt(min: number, max: number) { // min and max included 
         return Math.floor(Math.random() * (max - min + 1) + min)
-      }
+    }
 }

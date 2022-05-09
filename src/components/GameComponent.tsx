@@ -1,23 +1,25 @@
-import { useState } from "react"
+import { CSSProperties, useState } from "react"
 import Game from "../Game"
 import { OverworldGenerator } from "../tilemap/OverworldGenerator"
+import { Timer } from "../utils/Timer"
 import GameGrid from "./GameGrid"
 import { GameSetting, GameSettingProps, GameSettingType } from "./GameSetting"
 
 export type GameSettings = {
-    sizeX: number,
-    sizeY: number,
+    size: number
 }
 
 export type GameSetting = keyof GameSettings
 
+export const gameSize = 600
+
 export function GameComponent() {
     let [gameSettings, setGameSettings] = useState<GameSettings>({
-        sizeX: 200,
-        sizeY: 200
+        size: 50
     })
+
     let generator = new OverworldGenerator()
-    let game = new Game(gameSettings.sizeX, gameSettings.sizeY, generator)
+    let game = new Game(gameSettings.size, gameSettings.size, generator)
     game.generateTilemap()
     let [dummyValue, updateState] = useState(0)
 
@@ -30,16 +32,26 @@ export function GameComponent() {
         updateState(dummyValue + 1)
     }
 
+    let gameGridStyle : CSSProperties = {
+        width: gameSize,
+        height: gameSize,
+    }
+
     return <div>
-        <GameSetting<number> label="Size X" defaultValue={50} 
-            setter={(value) => {updateValue("sizeX", value)}} 
-            getter={() => {return gameSettings.sizeX}}/>
+        <div className="flex justify-evenly">
+            <GameSetting<number> label="Size" defaultValue={50} 
+                setter={(value) => {updateValue("size", value)}} 
+                getter={() => {return gameSettings.size}}/>
+        </div>
+
         <button onClick={() => {
             console.log("Attempting regenerate")
             game.generateTilemap()
             update()
         }}>Regenerate</button>
-        <GameGrid game={game} updateGame={update}/>
+        <div className="flex items-center justify-center" style={gameGridStyle}>
+            <GameGrid game={game} updateGame={update}/>
+        </div>
     </div>
 }
 
