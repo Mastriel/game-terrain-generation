@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import Game, { getTileColor, Tile } from "../Game";
 import { GameSettings } from "./GameComponent";
 
@@ -19,9 +19,12 @@ export default function GameGrid(props: GameGridProps) : JSX.Element {
         }
     }, [canvasRef, props.game])
 
+    let style : CSSProperties = {
+        imageRendering: "pixelated"
+    }
     return (
         <div>
-            <canvas ref={canvasRef} height={GRID_SIZE} width={GRID_SIZE} />
+            <canvas ref={canvasRef} style={style} height={GRID_SIZE} width={GRID_SIZE} />
         </div>
     )
 }
@@ -32,6 +35,8 @@ function drawCanvas(game: Game, canvas: HTMLCanvasElement, settings: GameSetting
     game.forEachTile((x, y, tile) => {
         ctx.fillStyle = getTileColor(tile)
         ctx.fillRect(squareSize*x, squareSize*y, squareSize, squareSize)
+    })
+    game.forEachTile((x, y, tile) => {
         createOutline(x, y, ctx, game, squareSize)
     })
 }
@@ -46,8 +51,17 @@ function createOutline(x: number, y: number, ctx: CanvasRenderingContext2D, game
     let neighbors = game.getNeighbors(x, y, true)
     
     if (neighbors[0] != tile) {
+        ctx.strokeStyle = "#000000"
+        ctx.beginPath()
         ctx.moveTo(squareSize*x, squareSize*y)
-        ctx.lineTo((squareSize+1)*x, (squareSize+1)*y)
+        ctx.lineTo(squareSize*(x+1), squareSize*y)
+        ctx.stroke()
+    }
+    if (neighbors[1] != tile) {
+        ctx.strokeStyle = "#000000"
+        ctx.beginPath()
+        ctx.moveTo(squareSize*x, squareSize*y)
+        ctx.lineTo(squareSize*x, squareSize*(y+1))
         ctx.stroke()
     }
 }

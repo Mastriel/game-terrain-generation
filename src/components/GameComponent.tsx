@@ -12,7 +12,7 @@ export type GameSetting = keyof GameSettings
 
 export function GameComponent() {
     let [gameSettings, setGameSettings] = useState<GameSettings>({
-        size: 100
+        size: 25
     })
     let generator = new OverworldGenerator()
     let game = new Game(gameSettings.size, generator)

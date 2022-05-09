@@ -98,10 +98,9 @@ export default class Game {
         }
     }
 
-    public getNeighbors(x: number, y: number, direct: boolean = false) : Tile[] {
-        let tileArray : Tile[] = []
+    public getNeighbors(x: number, y: number, direct: boolean = false) : (Tile | undefined)[] {
+        let tileArray : (Tile | undefined)[] = []
         const pushIfNotNull = (item?: Tile) => {
-            if (!item) return
             tileArray.push(item)
         }
         
@@ -121,11 +120,12 @@ export default class Game {
 
     public getNeighborQuantities(x: number, y: number, direct: boolean = false) : QuantifiableTileset {
         let neighbors = this.getNeighbors(x, y, direct)
+            .filter((it) => { return it !== undefined })
         let items : Partial<QuantifiableTileset> = {} 
         for (let neighbor of neighbors) {
-            let previousValue = items[neighbor]
+            let previousValue = items[neighbor!]
             let newValue = (previousValue ?? 0) + 1
-            items[neighbor] = newValue
+            items[neighbor!] = newValue
         }
         for (let item of Object.entries(items)) {
             let typedItem = item as unknown as Tile
