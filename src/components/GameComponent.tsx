@@ -32,11 +32,6 @@ export function GameComponent() {
         updateState(dummyValue + 1)
     }
 
-    let gameGridStyle : CSSProperties = {
-        width: gameSize,
-        height: gameSize,
-    }
-
     return <div>
         <GameSetting<number> label="Size" defaultValue={50} 
             setter={(value) => {updateValue("size", value)}} 
