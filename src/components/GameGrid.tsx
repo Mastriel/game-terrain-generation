@@ -51,14 +51,14 @@ function createOutline(x: number, y: number, ctx: CanvasRenderingContext2D, game
     let neighbors = game.getNeighbors(x, y, true)
     
     if (neighbors[0] != tile) {
-        ctx.strokeStyle = "#000000"
+        ctx.strokeStyle = "#00000077"
         ctx.beginPath()
         ctx.moveTo(squareSize*x, squareSize*y)
         ctx.lineTo(squareSize*(x+1), squareSize*y)
         ctx.stroke()
     }
     if (neighbors[1] != tile) {
-        ctx.strokeStyle = "#000000"
+        ctx.strokeStyle = "#00000055"
         ctx.beginPath()
         ctx.moveTo(squareSize*x, squareSize*y)
         ctx.lineTo(squareSize*x, squareSize*(y+1))
