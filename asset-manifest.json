@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/game-terrain-generation/static/css/main.2320791d.css",
+    "main.js": "/game-terrain-generation/static/js/main.468302ea.js",
+    "static/js/787.7ebe7c37.chunk.js": "/game-terrain-generation/static/js/787.7ebe7c37.chunk.js",
+    "index.html": "/game-terrain-generation/index.html",
+    "main.2320791d.css.map": "/game-terrain-generation/static/css/main.2320791d.css.map",
+    "main.468302ea.js.map": "/game-terrain-generation/static/js/main.468302ea.js.map",
+    "787.7ebe7c37.chunk.js.map": "/game-terrain-generation/static/js/787.7ebe7c37.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2320791d.css",
+    "static/js/main.468302ea.js"
+  ]
+}
