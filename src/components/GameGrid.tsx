@@ -17,7 +17,7 @@ export default function GameGrid(props: GameGridProps) : JSX.Element {
         if (canvasRef.current) {
             drawCanvas(props.game, canvasRef.current, props.gameSettings)
         }
-    }, [canvasRef, props.game])
+    }, [canvasRef, props.game, props.gameSettings])
 
     let style : CSSProperties = {
         imageRendering: "pixelated"
@@ -36,7 +36,7 @@ function drawCanvas(game: Game, canvas: HTMLCanvasElement, settings: GameSetting
         ctx.fillStyle = getTileColor(tile)
         ctx.fillRect(squareSize*x, squareSize*y, squareSize, squareSize)
     })
-    game.forEachTile((x, y, tile) => {
+    game.forEachTile((x, y) => {
         createOutline(x, y, ctx, game, squareSize)
     })
 }
